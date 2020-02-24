@@ -1,0 +1,219 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+
+version: 2
+jobs:
+  buster 3.5:
+    docker:
+      - image: circleci/python:3.5-buster
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-3.5-pypi-{{ checksum "requirements/all.txt" }}
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip setuptools wheel
+            pip install -U sphinx
+            pip install -U -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-3.5-pypi-{{ checksum "requirements/all.txt" }}
+
+      # run tests
+      - run:
+          name: build distributions
+          command: |
+            . venv/bin/activate
+            python3 ./setup.py sdist bdist_egg bdist_wheel
+            find dist -name *.whl -exec pip install '{}' +
+
+      # build docs
+      - run:
+          name: build documentation
+          command: |
+            . venv/bin/activate
+            cd docs && make html
+
+      - store_artifacts:
+          path: dist
+          destination: distributions
+
+      - store_artifacts:
+          path: docs/_build
+          destination: documentation
+
+  buster 3.6:
+    docker:
+      - image: circleci/python:3.6-buster
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-3.6-pypi-{{ checksum "requirements/all.txt" }}
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip setuptools wheel
+            pip install -U sphinx
+            pip install -U -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-3.6-pypi-{{ checksum "requirements/all.txt" }}
+
+      # run tests
+      - run:
+          name: build distributions
+          command: |
+            . venv/bin/activate
+            python3 ./setup.py sdist bdist_egg bdist_wheel
+            find dist -name *.whl -exec pip install '{}' +
+
+      # build docs
+      - run:
+          name: build documentation
+          command: |
+            . venv/bin/activate
+            cd docs && make html
+
+      - store_artifacts:
+          path: dist
+          destination: distributions
+
+      - store_artifacts:
+          path: docs/_build
+          destination: documentation
+
+  buster 3.7:
+    docker:
+      - image: circleci/python:3.7-buster
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-3.7-pypi-{{ checksum "requirements/all.txt" }}
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip setuptools wheel
+            pip install -U sphinx
+            pip install -U -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-3.7-pypi-{{ checksum "requirements/all.txt" }}
+
+      # run tests
+      - run:
+          name: build distributions
+          command: |
+            . venv/bin/activate
+            python3 ./setup.py sdist bdist_egg bdist_wheel
+            find dist -name *.whl -exec pip install '{}' +
+
+      # build docs
+      - run:
+          name: build documentation
+          command: |
+            . venv/bin/activate
+            cd docs && make html
+
+      - store_artifacts:
+          path: dist
+          destination: distributions
+
+      - store_artifacts:
+          path: docs/_build
+          destination: documentation
+
+  buster 3.8:
+    docker:
+      - image: circleci/python:3.8-buster
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-3.8-pypi-{{ checksum "requirements/all.txt" }}
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -U pip setuptools wheel
+            pip install -U sphinx
+            pip install -U -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-3.8-pypi-{{ checksum "requirements/all.txt" }}
+
+      # run tests
+      - run:
+          name: build distributions
+          command: |
+            . venv/bin/activate
+            python3 ./setup.py sdist bdist_egg bdist_wheel
+            find dist -name *.whl -exec pip install '{}' +
+
+      # build docs
+      - run:
+          name: build documentation
+          command: |
+            . venv/bin/activate
+            cd docs && make html
+
+      - store_artifacts:
+          path: dist
+          destination: distributions
+
+      - store_artifacts:
+          path: docs/_build
+          destination: documentation
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "buster 3.5"
+      - "buster 3.6"
+      - "buster 3.7"
+      - "buster 3.8"

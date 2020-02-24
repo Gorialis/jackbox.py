@@ -1,0 +1,105 @@
+
+stages:
+  - build
+  - deploy
+
+.dependencies: &dependencies
+  before_script:
+    - python -m pip install -U pip setuptools wheel
+    - pip install -U sphinx
+    - pip install -U -r requirements.txt
+
+.build_dists: &build_dists
+  script:
+    - python ./setup.py sdist bdist_egg bdist_wheel
+    - find dist -name *.whl -exec pip install '{}' +
+    - cd docs && make html
+
+alpine 3.6:
+  stage: build
+  image: python:3.6-alpine
+  <<: *dependencies
+  <<: *build_dists
+  artifacts:
+    paths:
+      - dist
+      - docs/_build
+    expire_in: 2 days
+  retry: 1
+  when: always
+
+buster 3.6:
+  stage: build
+  image: python:3.6-buster
+  <<: *dependencies
+  <<: *build_dists
+  artifacts:
+    paths:
+      - dist
+      - docs/_build
+    expire_in: 2 days
+  retry: 1
+  when: always
+
+alpine 3.7:
+  stage: build
+  image: python:3.7-alpine
+  <<: *dependencies
+  <<: *build_dists
+  artifacts:
+    paths:
+      - dist
+      - docs/_build
+    expire_in: 2 days
+  retry: 1
+  when: always
+
+buster 3.7:
+  stage: build
+  image: python:3.7-buster
+  <<: *dependencies
+  <<: *build_dists
+  artifacts:
+    paths:
+      - dist
+      - docs/_build
+    expire_in: 2 days
+  retry: 1
+  when: always
+
+alpine 3.8:
+  stage: build
+  image: python:3.8-alpine
+  <<: *dependencies
+  <<: *build_dists
+  artifacts:
+    paths:
+      - dist
+      - docs/_build
+    expire_in: 2 days
+  retry: 1
+  when: always
+
+buster 3.8:
+  stage: build
+  image: python:3.8-buster
+  <<: *dependencies
+  <<: *build_dists
+  artifacts:
+    paths:
+      - dist
+      - docs/_build
+    expire_in: 2 days
+  retry: 1
+  when: always
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - mv docs/_build/html public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master

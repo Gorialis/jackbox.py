@@ -1,0 +1,13 @@
+dist: trusty
+language: python
+python:
+  - "3.6"
+before_script:
+  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
+install:
+  - "python -m pip install -U pip setuptools wheel"
+  - "pip install -U sphinx"
+  - "pip install -U -r requirements.txt"
+script:
+  - "python ./setup.py sdist bdist_egg bdist_wheel"
+  - "cd docs && make html"
